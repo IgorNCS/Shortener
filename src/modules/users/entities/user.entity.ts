@@ -1,3 +1,4 @@
+import { Shortener } from "../../shortener/entities/shortener.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -14,5 +15,7 @@ export class User {
     @Column()
     password:string;
 
+    @OneToMany(() => Shortener, (shortener) => shortener.id)
+    shorteners: Shortener[];
 
 }

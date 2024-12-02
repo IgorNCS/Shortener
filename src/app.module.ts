@@ -3,6 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
+import { ShortenerModule } from './modules/shortener/shortener.module';
 import { AuthModule } from './auth/auth.module';
 import { ClsModule } from 'nestjs-cls';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -22,6 +23,7 @@ import { JwtModule } from '@nestjs/jwt';
       autoLoadEntities: true,
     }),
     UsersModule,
+    ShortenerModule,
     AuthModule,
     JwtModule,
     ClsModule.forRoot({
