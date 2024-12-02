@@ -34,13 +34,19 @@
    yarn install
    ```
 
-3. Rode as migration que acompanha o projeto:
+3. Gere uma migrate ou pule para o proximo passo para usar a que acompanha o projeto:
+
+   ```shell
+   typeorm migration:migrate
+   ```
+
+4. Rode as migration que acompanha o projeto ou a gerada por você:
 
    ```shell
    typeorm migration:run
    ```
 
-4. Start o projeto:
+5. Start o projeto:
 
    ```shell
    yarn start
