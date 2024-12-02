@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, InternalServerErrorE
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/request/create-user.dto';
 import { UpdateUserDto } from './dto/request/update-user.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -23,6 +24,7 @@ export class UsersController {
     }
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Patch('')
   update(@Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(updateUserDto);
