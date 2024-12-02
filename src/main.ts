@@ -18,6 +18,6 @@ async function bootstrap() {
   const swaggerDocument = YAML.load('./documentation.swagger.yaml');
 
   app.use('/documentation', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT??3000);
 }
 bootstrap();
