@@ -1,0 +1,278 @@
+swagger: '2.0'
+info:
+  title: 'API de Encurtar Links'
+  description: 'API para encurtamento de links com a possibilidade de autenticação e gerenciamento de encurtados.'
+  version: '1.0'
+paths:
+  /users:
+    post:
+      tags:
+      - User
+      summary: 'Criar um novo usuário'
+      description: 'Cria um novo usuário no sistema.'
+      parameters:
+        - name: 'createUserDto'
+          in: 'body'
+          required: true
+          description: 'Objeto para criar um novo usuário.'
+          schema:
+            type: 'object'
+            properties:
+              name:
+                type: 'string'
+              email:
+                type: 'string'
+                format: 'email'
+              password:
+                type: 'string'
+                minLength: 8
+              confirmPassword:
+                type: 'string'
+                minLength: 8
+            required:
+              - name
+              - email
+              - password
+              - confirmPassword
+      responses:
+        201:
+          description: 'Usuário criado com sucesso.'
+          schema:
+            $ref: '#/definitions/ResponseUserDto'
+        400:
+          description: 'Erro de solicitação, dados inválidos.'
+        409:
+          description: 'Conflito, o e-mail já está cadastrado.'
+        500:
+          description: 'Erro interno do servidor.'     
+    patch:
+      tags:
+      - User
+      summary: 'Atualizar dados do usuário'
+      description: 'Atualiza os dados do usuário logado.'
+      parameters:
+        - name: 'updateUserDto'
+          in: 'body'
+          required: true
+          description: 'Objeto com dados para atualização do usuário.'
+          schema:
+            type: 'object'
+            properties:
+              name:
+                type: 'string'
+              email:
+                type: 'string'
+                format: 'email'
+              newPassword:
+                type: 'string'
+                minLength: 8
+              confirmNewPassword:
+                type: 'string'
+                minLength: 8
+            required:
+              - name
+              - email
+      responses:
+        200:
+          description: 'Usuário atualizado com sucesso.'
+          schema:
+            $ref: '#/definitions/ResponseUserDto'
+        400:
+          description: 'Erro de solicitação, dados inválidos.'
+        404:
+          description: 'Usuário não encontrado.'
+        500:
+          description: 'Erro interno do servidor.'
+    delete:
+      tags:
+      - User
+      summary: 'Remover usuário'
+      description: 'Remove o usuário logado do sistema.'
+      responses:
+        200:
+          description: 'Usuário removido com sucesso.'
+        404:
+          description: 'Usuário não encontrado.'
+        500:
+          description: 'Erro interno do servidor.'
+  /auth/login:
+    post:
+      tags:
+      - Auth
+      summary: 'Login de usuário'
+      description: 'Realiza o login de um usuário no sistema.'
+      parameters:
+        - name: 'loginDto'
+          in: 'body'
+          required: true
+          description: 'Objeto com as credenciais do usuário para login.'
+          schema:
+            type: 'object'
+            properties:
+              email:
+                type: 'string'
+                format: 'email'
+              password:
+                type: 'string'
+                minLength: 8
+            required:
+              - email
+              - password
+      responses:
+        200:
+          description: 'Login realizado com sucesso.'
+          schema:
+            type: 'object'
+            properties:
+              token:
+                type: 'string'
+                description: 'Token de autenticação gerado para o usuário.'
+        400:
+          description: 'Credenciais inválidas.'
+        500:
+          description: 'Erro interno do servidor.'
+  /auth/logout:
+    post:
+      tags:
+      - Auth
+      summary: 'Logout de usuário'
+      description: 'Realiza o logout de um usuário no sistema.'
+      responses:
+        200:
+          description: 'Logout realizado com sucesso.'
+        500:
+          description: 'Erro interno do servidor.'
+  /shortener:
+    post:
+      tags:
+      - Shortener
+      summary: 'Criar um novo link encurtado'
+      description: 'Cria um link encurtado a partir de uma URL original.'
+      parameters:
+        - name: 'createShortenerDto'
+          in: 'body'
+          required: true
+          description: 'Objeto para criar um novo link encurtado.'
+          schema:
+            $ref: '#/definitions/CreateShortenerDto'
+      responses:
+        201:
+          description: 'Link encurtado criado com sucesso.'
+          schema:
+            $ref: '#/definitions/ResponseShortenerDto'
+          links:
+            ShortenerDetails:
+              operationId: 'getShortenerById'
+              parameters:
+                id: '$response.body.id'
+        400:
+          description: 'Dados inválidos fornecidos.'
+        409:
+          description: 'URL encurtada já existente.'
+        500:
+          description: 'Erro interno do servidor.'
+  /shortener/{id}:
+    patch:
+      tags:
+      - Shortener
+      summary: 'Atualizar um link encurtado existente'
+      description: 'Atualiza o link encurtado para a URL fornecida.'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID do link encurtado a ser atualizado.'
+          type: 'string'
+        - name: 'updateShortenerDto'
+          in: 'body'
+          required: true
+          description: 'Objeto com dados para atualizar o link encurtado.'
+          schema:
+            $ref: '#/definitions/UpdateShortenerDto'
+      responses:
+        200:
+          description: 'Link encurtado atualizado com sucesso.'
+          schema:
+            $ref: '#/definitions/ResponseShortenerDto'
+          links:
+            ShortenerDetails:
+              operationId: 'getShortenerById'
+              parameters:
+                id: '$response.body.id'
+        400:
+          description: 'Dados inválidos fornecidos.'
+        403:
+          description: 'Você não tem permissão para editar essa URL encurtada.'
+        404:
+          description: 'Link encurtado não encontrado.'
+        500:
+          description: 'Erro interno do servidor.'
+    delete:
+      tags:
+      - Shortener
+      summary: 'Remover um link encurtado'
+      description: 'Exclui o link encurtado com o ID fornecido.'
+      parameters:
+        - name: 'id'
+          in: 'path'
+          required: true
+          description: 'ID do link encurtado a ser removido.'
+          type: 'string'
+      responses:
+        200:
+          description: 'Link encurtado removido com sucesso.'
+        403:
+          description: 'Você não tem permissão para excluir essa URL encurtada.'
+        404:
+          description: 'Link encurtado não encontrado.'
+        500:
+          description: 'Erro interno do servidor.'
+definitions:
+  CreateShortenerDto:
+    type: 'object'
+    properties:
+      originalURL:
+        type: 'string'
+        format: 'uri'
+        description: 'URL original que será encurtada.'
+      shortenerURL:
+        type: 'string'
+        description: 'URL encurtada gerada. Pode ser deixada em branco para ser gerada automaticamente.'
+    required:
+      - originalURL
+  UpdateShortenerDto:
+    type: 'object'
+    properties:
+      originalURL:
+        type: 'string'
+        format: 'uri'
+        description: 'Nova URL original.'
+      shortenerURL:
+        type: 'string'
+        description: 'Nova URL encurtada.'
+  ResponseShortenerDto:
+    type: 'object'
+    properties:
+      id:
+        type: 'integer'
+        description: 'ID do link encurtado.'
+      originalURL:
+        type: 'string'
+        format: 'uri'
+        description: 'URL original que foi encurtada.'
+      shortenerURL:
+        type: 'string'
+        description: 'URL encurtada gerada.'
+      clicks:
+        type: 'integer'
+        description: 'Número de cliques no link encurtado.'
+  ResponseUserDto:
+    type: 'object'
+    properties:
+      identificador:
+        type: 'integer'
+      email:
+        type: 'string'
+        format: 'email'
+      nome:
+        type: 'string'
