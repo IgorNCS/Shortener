@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ClsModule } from 'nestjs-cls';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
+import { RedirectModule } from './modules/redirect/redirect.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { JwtModule } from '@nestjs/jwt';
       global: true,
       middleware: { mount: true },
     }),
+    RedirectModule,
   ],
   controllers: [AppController],
   providers: [AppService],
