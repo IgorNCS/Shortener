@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './modules/users/users.module';
 import { ClsModule } from 'nestjs-cls';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
@@ -19,6 +20,7 @@ import { JwtModule } from '@nestjs/jwt';
       synchronize: false,
       autoLoadEntities: true,
     }),
+    UsersModule,
     JwtModule,
     ClsModule.forRoot({
       global: true,
