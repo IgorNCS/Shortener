@@ -13,16 +13,27 @@ import { RedirectModule } from './modules/redirect/redirect.module';
 @Module({
   imports: [
     ConfigModule.forRoot({isGlobal:true}),
+    // TypeOrmModule.forRoot({
+    //   type: 'mysql',
+    //   host: process.env.MYSQL_HOST,
+    //   port: parseInt(process.env.MYSQL_PORT),
+    //   username: process.env.MYSQL_USERNAME,
+    //   password: process.env.MYSQL_PASSWORD,
+    //   database: process.env.MYSQL_DATABASE_NAME,
+    //   synchronize: false,
+    //   autoLoadEntities: true,
+    // }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: process.env.HOST_DB,
-      port: parseInt(process.env.PORT_DB),
-      username: process.env.USER_DB,
-      password: process.env.PASSWORD_DB,
-      database: process.env.NAME_DB,
-      synchronize: false,
+      host: process.env.MYSQL_HOST,  // Aqui usamos o nome do serviço do MySQL no Docker Compose
+      port: parseInt(process.env.MYSQL_PORT),
+      username: process.env.MYSQL_USERNAME,
+      password: process.env.MYSQL_PASSWORD,
+      database: process.env.MYSQL_DATABASE_NAME,
+      synchronize: process.env.MYSQL_SYNCHRONIZE === 'true', // Certifique-se de que o valor seja tratado como booleano
       autoLoadEntities: true,
     }),
+    
     UsersModule,
     ShortenerModule,
     AuthModule,

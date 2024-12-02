@@ -15,7 +15,7 @@ export default new DataSource({
   port: configService.get('MYSQL_PORT'),
   username: configService.get('MYSQL_USERNAME'),
   password: configService.get('MYSQL_PASSWORD'),
-  database: configService.get('MYSQL_DATABASE'),
+  database: configService.get('MYSQL_DATABASE_NAME'),
   entities: [User],
   synchronize: configService.get('nodenv') === 'development',
   logging: configService.get('nodenv') === 'development',
